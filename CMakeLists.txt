@@ -5,3 +5,5 @@ project(acc VERSION 0.1 LANGUAGES CXX)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 add_executable(acc main.cpp volk.c)
+#target_compile_options(acc PUBLIC -fsanitize=address)
+#target_link_options(acc PUBLIC -fsanitize=address)

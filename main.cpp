@@ -7,6 +7,8 @@
 #include <cstring>
 #include <iostream>
 
+#define BROKEN
+
 int main()
 {
     VkResult res{volkInitialize()};
@@ -77,7 +79,7 @@ int main()
             else if (strstr(properties.extensionName, VK_KHR_ACCELERATION_STRUCTURE_EXTENSION_NAME))
             {
                 acceleration_supported = true;
-                std::cout << VK_KHR_DEFERRED_HOST_OPERATIONS_EXTENSION_NAME << " version " << properties.specVersion << '\n';
+                std::cout << VK_KHR_ACCELERATION_STRUCTURE_EXTENSION_NAME << " version " << properties.specVersion << '\n';
             }
         }
 
@@ -110,14 +112,17 @@ int main()
 
     float priority{1.0f};
     VkDeviceQueueCreateInfo queue_create_info {
-        .sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
+        .sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,
         .queueFamilyIndex = 0,
         .queueCount = 1,
         .pQueuePriorities = &priority
     };
 
-
-    char const* extensions[] = { VK_KHR_ACCELERATION_STRUCTURE_EXTENSION_NAME, VK_KHR_DEFERRED_HOST_OPERATIONS_EXTENSION_NAME };
+    char const* extensions[] = { VK_KHR_DEFERRED_HOST_OPERATIONS_EXTENSION_NAME, 
+#ifdef BROKEN
+        VK_KHR_ACCELERATION_STRUCTURE_EXTENSION_NAME
+#endif
+    };
 
     VkPhysicalDeviceAccelerationStructureFeaturesKHR acceleration_structure_features {
         .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ACCELERATION_STRUCTURE_FEATURES_KHR,
@@ -126,7 +131,9 @@ int main()
 
     VkPhysicalDeviceVulkan12Features device_12_features {
         .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES,
+#ifdef BROKEN
         .pNext = &acceleration_structure_features,
+#endif
         .descriptorIndexing = VK_TRUE,
         .bufferDeviceAddress = VK_TRUE,
     };
@@ -142,7 +149,11 @@ int main()
         .pNext = &device_features,
         .queueCreateInfoCount = 1,
         .pQueueCreateInfos = &queue_create_info,
+#ifdef BROKEN
         .enabledExtensionCount = 2,
+#else
+        .enabledExtensionCount = 1,
+#endif
         .ppEnabledExtensionNames = extensions,
     };
 
