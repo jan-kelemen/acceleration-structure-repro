@@ -1,5 +1,5 @@
 #define VOLK_IMPLEMENTATION
-#include <volk.h>
+#include "volk.h"
 
 
 #include <cassert>
@@ -53,8 +53,7 @@ int main()
     }
 
     {
-        uint32_t extension_count{};
-        res = vkEnumerateDeviceExtensionProperties(selected_physical_device,
+        uint32_t extension_count{}; res = vkEnumerateDeviceExtensionProperties(selected_physical_device,
             VK_NULL_HANDLE,
             &extension_count,
             nullptr);
@@ -126,7 +125,7 @@ int main()
 
     VkPhysicalDeviceAccelerationStructureFeaturesKHR acceleration_structure_features {
         .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ACCELERATION_STRUCTURE_FEATURES_KHR,
-        .accelerationStructure = VK_TRUE,
+        .accelerationStructure = VK_FALSE,
     };
 
     VkPhysicalDeviceVulkan12Features device_12_features {
